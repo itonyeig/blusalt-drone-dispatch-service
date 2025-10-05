@@ -15,7 +15,7 @@ export class DroneBatteryGuard implements CanActivate {
     }
 
     if (drone.battery < MIN_BATTERY_TO_LOAD) {
-      this.logger.debug(`Drone ${drone._id} battery too low (${drone.battery}%)`);
+      this.logger.debug(`Drone ${drone._id.toString()} battery too low (${drone.battery}%)`);
       throw new NotFoundException('Drone battery level is below the permitted threshold');
     }
 
