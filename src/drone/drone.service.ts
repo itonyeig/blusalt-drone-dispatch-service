@@ -6,6 +6,8 @@ import { CreateDroneDto } from './dto/create-drone.dto';
 import { DroneState } from './enums/drone-state.enum';
 import { DroneModel } from './enums/drone-model.enum';
 import { randomBytes } from 'crypto';
+import { GetAllDronesDto } from './dto/get-drones.dto';
+import { paginate } from 'src/utils/pagination.helper';
 
 @Injectable()
 export class DroneService {
@@ -22,6 +24,18 @@ export class DroneService {
     }
     const drone = await this.droneModel.create(droneData);
     return drone;
+  }
+
+  async getDrones(dto: GetAllDronesDto){
+    const { model } = dto;
+    const query: Partial<Drone> = {};
+
+    if (model) {
+      query.model = model;
+    }
+
+    const drones = await paginate(this.droneModel, query, dto);
+    return drones;
   }
 
   private droneCapacity(model: DroneModel): number {
