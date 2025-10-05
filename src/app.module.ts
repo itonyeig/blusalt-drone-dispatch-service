@@ -5,6 +5,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MemoryDbModule } from './database/memory-db.module';
 import { DispatchModule } from './dispatch/dispatch.module';
 import { DroneModule } from './drone/drone.module';
+import { MedicationModule } from './medication/medication.module';
 import mongoose from 'mongoose';
 
 // ─── Global Mongoose options ───────────────────────────────
@@ -26,6 +27,7 @@ mongoose.plugin((schema) => {
     // DatabaseModule,
     DispatchModule,
     DroneModule,
+    MedicationModule,
   ],
 })
 export class AppModule implements OnApplicationShutdown {

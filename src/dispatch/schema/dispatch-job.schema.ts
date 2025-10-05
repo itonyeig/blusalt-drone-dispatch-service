@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 import { Drone } from '../../drone/schemas/drone.schema';
-import { Medication } from '../../drone/schemas/medication.schema';
+import { Medication } from '../../medication/schema/medication.schema';
 
 @Schema()
 export class DispatchJob {

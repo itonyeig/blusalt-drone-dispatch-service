@@ -54,7 +54,7 @@ export class DroneService {
   }
 
   private async generateSerialNumber(): Promise<string> {
-    const serialNumber = 'DRN' + randomBytes(6).toString('hex').toUpperCase();
+    const serialNumber = 'DRN-' + randomBytes(6).toString('hex').toUpperCase();
     const doc = await this.droneModel.exists({ serialNumber });
 
     if (doc) {

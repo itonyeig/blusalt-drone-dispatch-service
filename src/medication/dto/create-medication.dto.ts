@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, IsUrl, Matches, Min } from 'class-validator';
+import { IsNumber, IsString, IsUrl, Matches, Max, Min } from 'class-validator';
 
 export class CreateMedicationDto {
   @ApiProperty({
@@ -19,6 +19,7 @@ export class CreateMedicationDto {
   @Type(() => Number)
   @IsNumber()
   @Min(0)
+  @Max(100)
   weight: number;
 
   @ApiProperty({
