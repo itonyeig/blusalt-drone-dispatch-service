@@ -1,18 +1,18 @@
 import { Inject, Module, OnApplicationShutdown } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-// import { DatabaseModule } from './database/database.module';
 import { MemoryDbModule } from './database/memory-db.module';
 import { DispatchModule } from './dispatch/dispatch.module';
 import { DroneModule } from './drone/drone.module';
 import { MedicationModule } from './medication/medication.module';
 import mongoose from 'mongoose';
+import { SeedModule } from './seed/seed.module';
 
-// ─── Global Mongoose options ───────────────────────────────
-mongoose.set('strict', 'throw'); // rejects unknown fields on writes
+mongoose.set('strict', 'throw');
 mongoose.plugin((schema) => {
-  schema.set('timestamps', true); // Add createdAt / updatedAt to every schema automatically
+  schema.set('timestamps', true);
 });
+
 @Module({
   imports: [
     MemoryDbModule,
@@ -24,10 +24,10 @@ mongoose.plugin((schema) => {
         dbName: 'blusalt',
       }),
     }),
-    // DatabaseModule,
     DispatchModule,
     DroneModule,
     MedicationModule,
+    SeedModule,
   ],
 })
 export class AppModule implements OnApplicationShutdown {

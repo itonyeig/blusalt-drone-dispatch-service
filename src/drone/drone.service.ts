@@ -7,25 +7,38 @@ import { CreateDroneDto } from './dto/create-drone.dto';
 import { DroneState } from './enums/drone-state.enum';
 import { GetAllDronesDto } from './dto/get-drones.dto';
 import { paginate } from 'src/utils/pagination.helper';
+import { DroneModel } from './enums/drone-model.enum';
+import { handleDuplicateError } from 'src/utils/helper.utils';
+import { droneCapacity } from 'src/utils/drone.utils';
 
 @Injectable()
 export class DroneService {
-  constructor(@InjectModel(Drone.name) private droneModel: Model<DroneDocument>){}
+  constructor(@InjectModel(Drone.name) private droneModel: Model<DroneDocument>) {}
 
-  async create(dto: CreateDroneDto){
-    const sn = await this.generateSerialNumber()
-    const droneData: Drone = {
-      model: dto.model,
-      battery: 100,
-      state: DroneState.IDLE,
-      weightLimit: this.droneCapacity(dto.model),
-      serialNumber: sn
+  async create(dto: CreateDroneDto) {
+    try {
+      const serialNumber = dto.serialNumber ?? (await this.generateSerialNumber());
+      // const existing = await this.droneModel.exists({ serialNumber });
+
+      // if (existing) {
+      //   throw new ConflictException(`Drone with serial number ${serialNumber} already exists`);
+      // }
+
+      const droneData: Drone = {
+        serialNumber,
+        model: dto.model,
+        battery: 100,
+        state: DroneState.IDLE,
+        weightLimit: droneCapacity(dto.model),
+      }
+      const drone = await this.droneModel.create(droneData);
+      return drone;
+    } catch (error) {
+      handleDuplicateError(error)
     }
-    const drone = await this.droneModel.create(droneData);
-    return drone;
   }
 
-  async getDrones(dto: GetAllDronesDto){
+  async getDrones(dto: GetAllDronesDto) {
     const { model } = dto;
     const query: Partial<Drone> = {};
 
@@ -37,20 +50,20 @@ export class DroneService {
     return drones;
   }
 
-  private droneCapacity(model: DroneModel): number {
-    switch (model) {
-      case DroneModel.LIGHTWEIGHT:
-        return 200;
-      case DroneModel.MIDDLEWEIGHT:
-        return 300;
-      case DroneModel.CRUISERWEIGHT:
-        return 400;
-      case DroneModel.HEAVYWEIGHT:
-        return 500;
-      default:
-        throw new Error(`Unknown drone model: ${model as string}`);
-    }
-  }
+  // private droneCapacity(model: DroneModel): number {
+  //   switch (model) {
+  //     case DroneModel.LIGHTWEIGHT:
+  //       return 200;
+  //     case DroneModel.MIDDLEWEIGHT:
+  //       return 300;
+  //     case DroneModel.CRUISERWEIGHT:
+  //       return 400;
+  //     case DroneModel.HEAVYWEIGHT:
+  //       return 500;
+  //     default:
+  //       throw new Error(`Unknown drone model: ${model as string}`);
+  //   }
+  // }
 
   private async generateSerialNumber(): Promise<string> {
     const serialNumber = 'DRN-' + randomBytes(6).toString('hex').toUpperCase();
@@ -62,8 +75,4 @@ export class DroneService {
 
     return serialNumber;
   }
-
 }
-
-
-

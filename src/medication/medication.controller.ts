@@ -17,7 +17,7 @@ export class MedicationController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all medications' })
+  @ApiOperation({ summary: 'Get all paginated medications' })
   async getAll(@Query() paginationDto: PaginationDto) {
     const data = await this.medicationService.getMedications(paginationDto);
     return ResponseFormatter.Ok({ data });

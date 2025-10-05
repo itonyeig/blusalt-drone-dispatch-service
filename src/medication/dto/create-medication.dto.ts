@@ -32,7 +32,7 @@ export class CreateMedicationDto {
   code: string;
 
   @ApiProperty({
-    description: 'Image representing the medication. Accepts URL or base64 string',
+    description: 'Image representing the medication. Accepts URL',
     example: 'https://cdn.example.com/medications/med_001.png',
   })
   @IsUrl()

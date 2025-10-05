@@ -8,7 +8,7 @@ export class CreateDispatchJobDto {
     example: '60f7f4a9183b2c6d88a5ba10',
   })
   @IsMongoId()
-  drone!: string;
+  drone: string;
 
   @ApiProperty({
     description: 'Identifiers of medications to load on the drone',
@@ -19,23 +19,8 @@ export class CreateDispatchJobDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsMongoId({ each: true })
-  medications!: string[];
+  medications: string[];
 
-  @ApiProperty({
-    description: 'State transition starting point for the dispatch',
-    enum: DroneState,
-    example: DroneState.LOADING,
-  })
-  @IsEnum(DroneState)
-  fromState!: DroneState;
-
-  @ApiProperty({
-    description: 'State transition destination for the dispatch',
-    enum: DroneState,
-    example: DroneState.LOADED,
-  })
-  @IsEnum(DroneState)
-  toState!: DroneState;
 
   @ApiProperty({
     description: 'Optional timestamp for when the dispatch occurs',
