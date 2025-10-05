@@ -107,9 +107,19 @@ export class SeedService implements OnApplicationBootstrap {
       },
     ];
 
-    const result = await this.droneModel.create(droneSeeds);
+    const operations = droneSeeds.map((seed) => ({
+      updateOne: {
+        filter: { serialNumber: seed.serialNumber },
+        update: { $set: seed },
+        upsert: true,
+      },
+    }));
+
+    const result = await this.droneModel.bulkWrite(operations, { ordered: false });
     this.logger.debug(
-      `Drone seed created: ${result.length}`,
+      `Drone seed upserted: ${result.upsertedCount ?? 0}, modified: ${
+        result.modifiedCount ?? 0
+      }`,
     );
   }
 
@@ -138,9 +148,19 @@ export class SeedService implements OnApplicationBootstrap {
       },
     ];
 
-    const result = await this.medicationModel.create(medicationSeeds);
+    const operations = medicationSeeds.map((seed) => ({
+      updateOne: {
+        filter: { code: seed.code },
+        update: { $set: seed },
+        upsert: true,
+      },
+    }));
+
+    const result = await this.medicationModel.bulkWrite(operations, { ordered: false });
     this.logger.debug(
-      `Medication seed created: ${result.length}`,
+      `Medication seed upserted: ${result.upsertedCount ?? 0}, modified: ${
+        result.modifiedCount ?? 0
+      }`,
     );
   }
 }
