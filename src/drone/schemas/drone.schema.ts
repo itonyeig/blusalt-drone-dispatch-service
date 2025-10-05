@@ -5,7 +5,7 @@ import { DroneState } from '../enums/drone-state.enum';
 
 @Schema()
 export class Drone {
-  @Prop({ required: true, trim: true, maxlength: 100 })
+  @Prop({ required: true, trim: true, maxlength: 100, unique: true })
   serialNumber: string;
 
   @Prop({ required: true, enum: DroneModel })
@@ -17,7 +17,7 @@ export class Drone {
   @Prop({ required: true, min: 0, max: 100, default: 100 })
   battery: number;
 
-  @Prop({ required: true, enum: DroneState })
+  @Prop({ required: true, enum: DroneState, default: DroneState.IDLE })
   state: DroneState;
 }
 

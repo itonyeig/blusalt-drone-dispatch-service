@@ -1,8 +1,7 @@
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsInt, IsNumber, IsString, Max, MaxLength, Min } from 'class-validator';
-import { DroneModel } from '../enums/drone-model.enum';
-import { DroneState } from '../enums/drone-state.enum';
+import { IsEnum } from 'class-validator';
+import { DroneModel } from '../../drone/enums/drone-model.enum';
 
 export class CreateDroneDto {
 
