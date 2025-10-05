@@ -2,11 +2,11 @@ import { Inject, Module, OnApplicationShutdown } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MemoryDbModule } from './database/memory-db.module';
-import { DispatchModule } from './dispatch/dispatch.module';
 import { DroneModule } from './drone/drone.module';
 import { MedicationModule } from './medication/medication.module';
 import mongoose from 'mongoose';
 import { SeedModule } from './seed/seed.module';
+import { DispatchModule } from './dispatch/dispatch.module';
 
 mongoose.set('strict', 'throw');
 mongoose.plugin((schema) => {
