@@ -2,6 +2,7 @@ import { Module, Inject, OnApplicationShutdown } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MemoryDbModule } from './database/memory-db.module';
+import { DispatchModule } from './dispatch/dispatch.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { MemoryDbModule } from './database/memory-db.module';
         dbName: 'blusalt',
       }),
     }),
+    DispatchModule,
   ],
 })
 export class AppModule implements OnApplicationShutdown {
