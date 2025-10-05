@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { Drone, DroneDocument } from './schemas/drone.schema';
-import { Model } from 'mongoose';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { randomBytes } from 'crypto';
+import { Drone, DroneDocument } from './schemas/drone.schema';
 import { CreateDroneDto } from './dto/create-drone.dto';
 import { DroneState } from './enums/drone-state.enum';
-import { DroneModel } from './enums/drone-model.enum';
-import { randomBytes } from 'crypto';
 import { GetAllDronesDto } from './dto/get-drones.dto';
 import { paginate } from 'src/utils/pagination.helper';
 

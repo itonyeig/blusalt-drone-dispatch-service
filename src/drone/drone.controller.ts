@@ -17,7 +17,7 @@ export class DroneController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all drones' })
+  @ApiOperation({ summary: 'Get all paginated drones' })
   async getAll(@Query() getAllDronesDto: GetAllDronesDto) {
     const data = await this.droneService.getDrones(getAllDronesDto);
     return ResponseFormatter.Ok({ data });
