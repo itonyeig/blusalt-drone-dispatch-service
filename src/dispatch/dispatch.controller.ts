@@ -19,18 +19,18 @@ export class DispatchController {
     if (!req.drone) {
       throw new InternalServerErrorException('Drone object not found');
     }
-    const data = await this.dispatchService.loadDrone(req.drone, dto);
-    return ResponseFormatter.Ok({ data });
+    try {
+      this.dispatchService.loadDrone(req.drone, dto)
+    } catch (error) {
+      console.log(' an error occured in transit', error)
+    }
+    return ResponseFormatter.Ok({ message: 'Drone in is preparing to load' });
   }
 
   @Get('available')
   @ApiOperation({ summary: 'List drones available for loading' })
   getAvailableDrones(@Query() dto: AvailableDronesDto) {
-    try {
-      this.dispatchService.getAvailableDrones(dto);
-    } catch (error) {
-      console.log(' an error occured in transit')
-    }
+    this.dispatchService.getAvailableDrones(dto);
     return ResponseFormatter.Ok({ message: 'drone has taken off' });
   }
 
