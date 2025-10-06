@@ -13,13 +13,13 @@ export enum DispatchJobStatus {
 @Schema({ _id: false })
 export class DispatchItem {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: Medication.name, required: true })
-  medication!: Types.ObjectId;
+  medication: Types.ObjectId;
 
   @Prop({ type: Number, required: true, min: 1 })
-  quantity!: number;
+  quantity: number;
 
   @Prop({ type: Number, required: true, min: 0 })
-  unitWeight!: number;
+  unitWeight: number;
 }
 
 const DispatchItemSchema = SchemaFactory.createForClass(DispatchItem);

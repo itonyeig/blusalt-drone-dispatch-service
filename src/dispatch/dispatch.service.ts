@@ -41,7 +41,7 @@ export class DispatchService {
     }
 
     const session = await this.connection.startSession();
-    let jobId: string | null = null;
+    let jobId: Types.ObjectId | null = null;
     const startTime = Date.now();
 
     try {
@@ -82,7 +82,7 @@ export class DispatchService {
           totalWeight,
           session,
         );
-        jobId = dispatchJob.id;
+        jobId = dispatchJob._id;
 
         await delay(DISPATCH_STATE_DELAY_MS);
 
