@@ -25,9 +25,13 @@ export class DispatchController {
 
   @Get('available')
   @ApiOperation({ summary: 'List drones available for loading' })
-  async getAvailableDrones(@Query() dto: AvailableDronesDto) {
-    const data = await this.dispatchService.getAvailableDrones(dto);
-    return ResponseFormatter.Ok({ data });
+  getAvailableDrones(@Query() dto: AvailableDronesDto) {
+    try {
+      this.dispatchService.getAvailableDrones(dto);
+    } catch (error) {
+      console.log(' an error occured in transit')
+    }
+    return ResponseFormatter.Ok({ message: 'drone has taken off' });
   }
 
   @Get(':droneId/items')

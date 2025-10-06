@@ -240,7 +240,7 @@ export class DispatchService {
       throw new ConflictException(`Unable to transition drone ${droneId.toString()} state.`);
     }
 
-    this.logger.debug(`[Dispatch] Drone ${droneId.toString()} ? ${nextState}`);
+    this.logger.debug(`[Dispatch] Drone ${droneId.toString()} is ${nextState}`);
   }
 
   private async completeDroneReturn(
