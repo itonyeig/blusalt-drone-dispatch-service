@@ -17,7 +17,7 @@ export class CronService {
     @InjectModel(AuditBattery.name) private readonly auditModel: Model<AuditBatteryDocument>,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES, {
+  @Cron(CronExpression.EVERY_HOUR, {
     name: 'droneBatteryAudit',
     timeZone: 'Africa/Lagos',
   })
