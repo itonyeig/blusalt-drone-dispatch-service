@@ -1,98 +1,96 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Blusalt Drone Dispatch Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS service for registering delivery drones, loading them with medication payloads, tracking dispatch jobs, and auditing fleet battery health. The project uses an in-memory MongoDB replica set (mongodb-memory-server) so it can run locally without additional infrastructure.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Repository
 
-## Description
+```
+https://github.com/itonyeig/blusalt-drone-dispatch-service
+```
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Features
 
-## Project setup
+- Register drones with configurable models, capacity, and battery levels
+- Load drones with medication items while enforcing weight and battery guardrails
+- Track dispatch jobs through their state transitions (IDLE ? LOADING ? � ? IDLE)
+- Automatic battery drain after each completed delivery
+- Paginated views for drones and per-drone battery audit trails
+- Cron job that snapshots every drone's battery level every 10 minutes (Africa/Lagos)
+- Built-in Swagger UI for exploring and testing the REST API
+- Seed data (10 drones, 3 medications) loaded at startup for quick experimentation
+
+## Requirements
+
+- Node.js 18+
+- npm 9+
+
+Everything else (MongoDB) runs in-memory via `mongodb-memory-server`.
+
+## Getting Started
 
 ```bash
+# 1. Clone the repository
+$ git clone https://github.com/itonyeig/blusalt-drone-dispatch-service.git
+$ cd blusalt-drone-dispatch-service
+
+# 2. Install dependencies
 $ npm install
-```
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
+# 3. Start the app (watch mode)
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
-## Run tests
+The service listens on **http://localhost:4000** by default. Each restart launches a fresh in-memory Mongo replica set, runs database migrations, and seeds demo data. When the application terminates, the in-memory database is gracefully disposed, ensuring a clean slate for the next run.
+
+> **Swagger UI**: After the server boots, open [http://localhost:4000/docs](http://localhost:4000/docs) to inspect the API schema, try requests, and view example payloads.
+
+## Available Scripts
 
 ```bash
-# unit tests
-$ npm run test
+# Development server (watch mode)
+npm run start:dev
 
-# e2e tests
-$ npm run test:e2e
+# Single-run development server
+npm run start
 
-# test coverage
-$ npm run test:cov
+# Production build & start
+npm run build
+npm run start:prod
+
+# Test suites
+npm run test        # unit tests
+npm run test:e2e    # e2e tests (optional)
+npm run test:cov    # coverage report
 ```
 
-## Deployment
+### Cron & Background Tasks
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- A scheduled job runs every 1 hour to snapshot drone battery levels into the `AuditBattery` collection.
+- Battery snapshots can be retrieved via `GET /drone/:droneId/audit` with pagination and optional ISO date filters (`startDate`, `endDate`).
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Data Seeding
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+On every startup the seed service provisionally upserts:
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+- 10 drones spanning all models and states
+- 3 medications (weight = 20g) with sample images
 
-## Resources
+Feel free to edit `src/seed/seed.service.ts` if you want to adjust the initial dataset.
 
-Check out a few resources that may come in handy when working with NestJS:
+## Testing In Swagger
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+1. Launch the dev server (`npm run start:dev`).
+2. Navigate to [http://localhost:4000/docs](http://localhost:4000/docs).
+3. Expand the `Drone` or `Dispatch` tags to exercise endpoints:
+   - `POST /drone` to register new drones
+   - `GET /drone` or `GET /drone/{droneId}/audit` for paginated listings
+   - `POST /dispatch/{droneId}/load` to simulate a delivery with automatic state transitions
+4. Update request bodies directly in the Swagger UI; responses include normalized JSON using the shared response formatter.
 
-## Support
+## Notes
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Transactions are enabled by running `mongodb-memory-server` in replica set mode. No external database is required.
+- Guards and service-level checks prevent overweight loads or low-battery dispatch attempts (<25%).
+- The cron job and seed module are registered automatically�no extra configuration needed.
 
-## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

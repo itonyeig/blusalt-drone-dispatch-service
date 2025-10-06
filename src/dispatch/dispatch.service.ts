@@ -17,7 +17,7 @@ import {
 import { AvailableDronesDto, LoadDroneDto } from './dto/load-drone.dto';
 import { MIN_BATTERY_TO_LOAD, DISPATCH_STATE_DELAY_MS, BATTERY_CONSUMPTION_PER_TRIP } from './constants/dispatch.constants';
 import { DroneState } from '../drone/enums/drone-state.enum';
-import { delay } from '../utils/helper.utils';
+// import { delay } from '../utils/helper.utils';
 import { paginate } from 'src/utils/pagination.helper';
 
 @Injectable()
@@ -72,7 +72,7 @@ export class DispatchService {
         }
 
         this.logger.debug(`[Dispatch] Drone ${claimedDrone.id} ? ${DroneState.LOADING}`);
-        await delay(DISPATCH_STATE_DELAY_MS);
+        // await delay(DISPATCH_STATE_DELAY_MS);
 
         await this.transitionDrone(claimedDrone._id, DroneState.LOADED, session);
         const dispatchJob = await this.createDispatchJob(
@@ -84,12 +84,12 @@ export class DispatchService {
         );
         jobId = dispatchJob._id;
 
-        await delay(DISPATCH_STATE_DELAY_MS);
+        // await delay(DISPATCH_STATE_DELAY_MS);
 
         await this.transitionDrone(claimedDrone._id, DroneState.DELIVERING, session);
         await this.updateJobStatus(dispatchJob._id, DispatchJobStatus.IN_PROGRESS, session);
 
-        await delay(DISPATCH_STATE_DELAY_MS);
+        // await delay(DISPATCH_STATE_DELAY_MS);
 
         await this.transitionDrone(claimedDrone._id, DroneState.DELIVERED, session);
         await this.updateJobStatus(
@@ -99,12 +99,12 @@ export class DispatchService {
           { droppedOffOn: new Date() },
         );
 
-        await delay(DISPATCH_STATE_DELAY_MS);
+        // await delay(DISPATCH_STATE_DELAY_MS);
 
         await this.transitionDrone(claimedDrone._id, DroneState.RETURNING, session);
         await this.updateJobStatus(dispatchJob._id, DispatchJobStatus.RETURNED, session);
 
-        await delay(DISPATCH_STATE_DELAY_MS);
+        // await delay(DISPATCH_STATE_DELAY_MS);
 
         // await this.transitionDrone(claimedDrone._id, DroneState.IDLE, session);
         await this.completeDroneReturn(claimedDrone._id, session)

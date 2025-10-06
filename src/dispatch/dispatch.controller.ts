@@ -19,11 +19,11 @@ export class DispatchController {
     if (!req.drone) {
       throw new InternalServerErrorException('Drone object not found');
     }
-    try {
-      this.dispatchService.loadDrone(req.drone, dto)
-    } catch (error) {
-      console.log(' an error occured in transit', error)
-    }
+    // try {
+    // } catch (error) {
+    //   console.log(' an error occured in transit', error)
+    // }
+    const data = await this.dispatchService.loadDrone(req.drone, dto)
     return ResponseFormatter.Ok({ message: 'Drone in is preparing to load' });
   }
 
