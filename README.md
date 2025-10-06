@@ -61,7 +61,7 @@ npm run start:prod
 ### Cron & Background Tasks
 
 - A scheduled job runs every 1 hour to snapshot drone battery levels into the `AuditBattery` collection.
-- Battery snapshots can be retrieved via `GET /drone/:droneId/audit` with pagination and optional ISO date filters (`startDate`, `endDate`).
+- Battery snapshots can be retrieved via `GET /drone/audit` with pagination 
 
 ## Data Seeding
 
