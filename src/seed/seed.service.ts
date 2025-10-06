@@ -134,7 +134,7 @@ export class SeedService implements OnApplicationBootstrap {
       },
       {
         name: 'HealQuick_15',
-        weight: 15,
+        weight: 215,
         code: 'MED_HQ15',
         image:
           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqDVXqKlsDA65rLm5IcB8Zc-XhDUrpVlnLW2hue2OQ5D0nYPkzMThLt98PwRDMg6yBoUQ&usqp=CAU',

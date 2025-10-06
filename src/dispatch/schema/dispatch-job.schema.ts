@@ -33,16 +33,16 @@ export class DispatchJob {
   items: DispatchItem[];
 
   @Prop({ type: Number, required: true, min: 0 })
-  totalWeight!: number;
+  totalWeight: number;
 
   @Prop({ type: Date, required: true })
-  loadedOn!: Date;
+  loadedOn: Date;
 
   @Prop({ type: Date })
   droppedOffOn?: Date;
 
   @Prop({ type: String, enum: DispatchJobStatus, default: DispatchJobStatus.ASSIGNED })
-  status!: DispatchJobStatus;
+  status: DispatchJobStatus;
 }
 
 export type DispatchJobDocument = DispatchJob & Document<Types.ObjectId>;

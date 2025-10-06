@@ -7,6 +7,7 @@ import { MedicationModule } from './medication/medication.module';
 import mongoose from 'mongoose';
 import { SeedModule } from './seed/seed.module';
 import { DispatchModule } from './dispatch/dispatch.module';
+import { CronModule } from './cron/cron.module';
 
 mongoose.set('strict', 'throw');
 mongoose.plugin((schema) => {
@@ -28,6 +29,7 @@ mongoose.plugin((schema) => {
     DroneModule,
     MedicationModule,
     SeedModule,
+    CronModule,
   ],
 })
 export class AppModule implements OnApplicationShutdown {

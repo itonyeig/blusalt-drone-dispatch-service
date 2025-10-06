@@ -1,9 +1,9 @@
-import { Body, Controller, Get, InternalServerErrorException, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, InternalServerErrorException, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { ResponseFormatter } from 'src/common/response-formatter';
 import { DispatchService } from './dispatch.service';
-import { LoadDroneDto } from './dto/load-drone.dto';
+import { AvailableDronesDto, LoadDroneDto } from './dto/load-drone.dto';
 import { DroneByIdGuard } from './guards/drone-by-id.guard';
 import { IdleDroneGuard } from './guards/idle-drone.guard';
 import { DroneBatteryGuard } from './guards/drone-battery.guard';
@@ -15,7 +15,7 @@ export class DispatchController {
   @Post(':droneId/load')
   @UseGuards(DroneByIdGuard, IdleDroneGuard, DroneBatteryGuard)
   @ApiOperation({ summary: 'Load a drone with medication items' })
-  async loadDrone(@Req() req: Request, @Body() dto: LoadDroneDto) {
+  async loadDrone(@Req() req: Request, @Body() dto: LoadDroneDto, @Param('droneId') droneId: string) {
     if (!req.drone) {
       throw new InternalServerErrorException('Drone object not found');
     }
@@ -25,8 +25,8 @@ export class DispatchController {
 
   @Get('available')
   @ApiOperation({ summary: 'List drones available for loading' })
-  async getAvailableDrones() {
-    const data = await this.dispatchService.getAvailableDrones();
+  async getAvailableDrones(@Query() dto: AvailableDronesDto) {
+    const data = await this.dispatchService.getAvailableDrones(dto);
     return ResponseFormatter.Ok({ data });
   }
 

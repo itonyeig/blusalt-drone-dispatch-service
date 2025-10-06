@@ -14,10 +14,11 @@ import {
   DispatchJobDocument,
   DispatchJobStatus,
 } from './schema/dispatch-job.schema';
-import { LoadDroneDto } from './dto/load-drone.dto';
-import { MIN_BATTERY_TO_LOAD, DISPATCH_STATE_DELAY_MS } from './constants/dispatch.constants';
+import { AvailableDronesDto, LoadDroneDto } from './dto/load-drone.dto';
+import { MIN_BATTERY_TO_LOAD, DISPATCH_STATE_DELAY_MS, BATTERY_CONSUMPTION_PER_TRIP } from './constants/dispatch.constants';
 import { DroneState } from '../drone/enums/drone-state.enum';
 import { delay } from '../utils/helper.utils';
+import { paginate } from 'src/utils/pagination.helper';
 
 @Injectable()
 export class DispatchService {
@@ -105,12 +106,13 @@ export class DispatchService {
 
         await delay(DISPATCH_STATE_DELAY_MS);
 
-        await this.transitionDrone(claimedDrone._id, DroneState.IDLE, session);
+        // await this.transitionDrone(claimedDrone._id, DroneState.IDLE, session);
+        await this.completeDroneReturn(claimedDrone._id, session)
       });
 
       const totalMs = Date.now() - startTime;
       this.logger.debug(
-        `[Dispatch] Drone ${drone._id} cycle completed in ${(totalMs / 1000).toFixed(1)}s`,
+        `[Dispatch] Drone ${drone._id.toString()} cycle completed in ${(totalMs / 1000).toFixed(1)}s`,
       );
     } finally {
       await session.endSession();
@@ -140,10 +142,13 @@ export class DispatchService {
     }));
   }
 
-  async getAvailableDrones() {
-    return this.droneModel
-      .find({ state: DroneState.IDLE, battery: { $gte: MIN_BATTERY_TO_LOAD } })
-      .lean();
+  async getAvailableDrones(dto: AvailableDronesDto) {
+    const query: Partial<Drone> = {
+       state: DroneState.IDLE, 
+       battery: { $gte: MIN_BATTERY_TO_LOAD } as any
+    }
+    if (dto.model) query.model = dto.model;
+    return await paginate(this.droneModel, query, dto)
   }
 
   // async getBatteryLevel(droneId: string) {
@@ -238,6 +243,28 @@ export class DispatchService {
     this.logger.debug(`[Dispatch] Drone ${droneId.toString()} ? ${nextState}`);
   }
 
+  private async completeDroneReturn(
+    droneId: Types.ObjectId,
+    session: ClientSession,
+  ) {
+    const droneDoc = await this.droneModel.findById(droneId).session(session);
+
+    if (!droneDoc) {
+      throw new ConflictException(`Unable to finalize return for drone ${droneId.toString()}.`);
+    }
+
+    const nextBattery = Math.max(0, droneDoc.battery - BATTERY_CONSUMPTION_PER_TRIP);
+    droneDoc.set({
+      state: DroneState.IDLE,
+      battery: nextBattery,
+    });
+    await droneDoc.save({ session });
+
+    this.logger.debug(
+      `[Dispatch] Drone ${droneId.toString()} -> ${DroneState.IDLE} (battery ${nextBattery}%)`,
+    );
+  }  
+
   private async updateJobStatus(
     jobId: Types.ObjectId,
     status: DispatchJobStatus,
@@ -261,3 +288,4 @@ export class DispatchService {
     return updated;
   }
 }
+

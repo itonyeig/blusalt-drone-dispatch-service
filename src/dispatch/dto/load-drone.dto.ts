@@ -1,6 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsInt, IsMongoId, Min, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsEnum, IsInt, IsMongoId, IsOptional, Min, ValidateNested } from 'class-validator';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { DroneModel } from 'src/drone/enums/drone-model.enum';
 
 export class LoadDroneItemDto {
   @ApiProperty({
@@ -31,4 +33,15 @@ export class LoadDroneDto {
   @ValidateNested({ each: true })
   @Type(() => LoadDroneItemDto)
   items: LoadDroneItemDto[];
+}
+
+export class AvailableDronesDto extends PaginationDto {
+  @ApiPropertyOptional({
+    description: 'Model classification of the drone',
+    enum: DroneModel,
+    example: null,
+  })
+  @IsOptional()
+  @IsEnum(DroneModel)
+  model?: DroneModel;
 }
