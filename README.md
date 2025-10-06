@@ -56,11 +56,6 @@ npm run start
 # Production build & start
 npm run build
 npm run start:prod
-
-# Test suites
-npm run test        # unit tests
-npm run test:e2e    # e2e tests (optional)
-npm run test:cov    # coverage report
 ```
 
 ### Cron & Background Tasks
